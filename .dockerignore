@@ -4,6 +4,9 @@ __pycache__
 .nextflow
 work
 .nextflow.log*
+Dockerfile
+env
+venv
 tmp
 env
 venv

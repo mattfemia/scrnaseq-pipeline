@@ -5,6 +5,7 @@ import os
 import argparse
 import scanpy as sc
 import anndata
+import pandas as pd
 
 def get_args():
 
@@ -33,7 +34,7 @@ def plot_top_genes(adata, count):
     adata.var_names_make_unique()
     sc.pl.highest_expr_genes(adata, n_top=count, )
 
-    return 0
+    return adata
 
 def apply_qc(adata, min_genes=200, min_cells=3, pct_mito=5, norm_target=1e4):
 
@@ -68,19 +69,93 @@ def calc_variable_genes(adata):
 
     sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5) # Calc
     sc.pl.highly_variable_genes(adata) # Plot
+    adata.raw = adata
     adata = adata[:, adata.var.highly_variable] # Subset
     
     return adata
 
-def run_pca(adata):
+def run_pca(adata, outfile):
 
-    sc.pp.regress_out(ad, ['total_counts', 'pct_counts_mt'])
-    sc.pp.scale(ad, max_value=10)
+    sc.pp.regress_out(adata,['total_counts', 'pct_counts_mt'])
+    sc.pp.scale(adata,max_value=10)
+    sc.tl.pca(adata,svd_solver='arpack')
+    sc.pl.pca(adata,color='GAPDH')
+    sc.pl.pca_variance_ratio(adata,log=True)
+    adata.write(outfile)
+
+    return adata
+
+def run_neighbors(adata):
     
+    sc.pp.neighbors(adata,n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adata)
+    sc.pl.umap(adata, color=['CST3', 'NKG7', 'GAPDH'], use_raw=False)
+
+    return adata
+
+def run_leiden_cluster(adata, outfile):
+    
+    sc.tl.leiden(adata)
+    sc.pl.umap(adata, color=['leiden', 'CST3', 'NKG7'])
+    adata.write(outfile)
+
+    return adata
+
+def rank_genes(adata, outfile, outdir):
+    
+    sc.tl.rank_genes_groups(adata, 'leiden', method='t-test')
+    sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
+
+    sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+    sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
+
+    adata.write(outfile)
+
+    sc.tl.rank_genes_groups(adata, 'leiden', method='logreg')
+    sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
+    adata = sc.read(outfile)
+
+    pd.DataFrame(adata.uns['rank_genes_groups']['names']).to_csv(f'{outdir}/gene_rank.csv')
+    result = adata.uns['rank_genes_groups']
+    groups = result['names'].dtype.names
+    pd.DataFrame(
+        {group + '_' + key[:1]: result[key][group]
+        for group in groups for key in ['names', 'pvals']}).to_csv(f'{outdir}/scored_rank.csv')
+
+    sc.tl.rank_genes_groups(adata,'leiden', groups=['0'], reference='1', method='wilcoxon')
+    sc.pl.rank_genes_groups(adata, groups=['0'], n_genes=20)
+
+    sc.pl.rank_genes_groups_violin(adata, groups='0', n_genes=8)
+
+    adata = sc.read(outfile)
+    sc.pl.rank_genes_groups_violin(adata, groups='0', n_genes=8)
+
+    sc.pl.violin(adata, ['CST3', 'NKG7', 'GAPDH'], groupby='leiden')
+
+    return adata
+
+def plot_marker_clusters(adata):
+    marker_genes = ['IL7R', 'CD79A', 'MS4A1', 'CD8A', 'CD8B', 'LYZ', 'CD14',
+            'LGALS3', 'S100A8', 'GNLY', 'NKG7', 'KLRB1',
+            'FCGR3A', 'MS4A7', 'FCER1A', 'CST3']
+    new_cluster_names = [
+        'CD4 T', 'CD14 Monocytes',
+        'B', 'CD8 T',
+        'NK', 'FCGR3A Monocytes',
+        'Dendritic', 'Megakaryocytes']
+    # adata = adata.rename_categories('leiden', new_cluster_names)
+    sc.pl.umap(adata, color='leiden', legend_loc='on data', title='', frameon=False)
+
+    sc.pl.dotplot(adata, marker_genes, groupby='leiden')
+    sc.pl.stacked_violin(adata, marker_genes, groupby='leiden', rotation=90)
+
+    return adata
+
 def main():
 
     # Get args
     path, outdir = get_args()
+    results_file = f'{outdir}/data/pbmc3k.h5ad'
 
     # Config 
     # ----------------------------------------------------------------------- #
@@ -108,8 +183,16 @@ def main():
     # Runner
     # ----------------------------------------------------------------------- #
     adata = setup_anndata(path=path)
-    plot_top_genes(adata=adata, count=20)
+    adata = plot_top_genes(adata, count=20)
     adata = apply_qc(adata, min_genes=200, min_cells=3, pct_mito=5, norm_target=1e4)
+    adata = calc_variable_genes(adata)
+    adata = run_pca(adata, outfile=results_file)
+    adata = run_neighbors(adata)
+    adata = run_leiden_cluster(adata, outfile=results_file)
+    adata = rank_genes(adata, outfile=results_file, outdir=sc.settings.datasetdir)
+    adata = plot_marker_clusters(adata)
+
+    return adata
 
 if __name__ == '__main__':
     main()

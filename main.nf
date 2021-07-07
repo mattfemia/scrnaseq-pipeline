@@ -3,14 +3,13 @@
 nextflow.enable.dsl=2
 
 // params.genes = "$baseDir/data"
-params.scanpy = "$projectDir/scanpy.py"
-
+params.analysis_file = "$projectDir/src/python/analysis.py"
 
 gene_ch = Channel
-            .fromPath('data/raw_feature_bc_matrix')
+            .fromPath("$projectDir/data/raw_feature_bc_matrix")
             .view()
 
-process createScanpy {
+process runScanpy {
     publishDir "$baseDir/outs", mode: 'copy'
     echo true
 
@@ -19,14 +18,15 @@ process createScanpy {
 
     script:
     """
-    echo ${projectDir}/analysis.py
-    mkdir -p $projectDir/logs $projectDir/figures
-    mkdir -p $projectDir/data/analysis
-    touch $projectDir/logs/metadata.txt $projectDir/logs/runtime.txt
-    python3 ${projectDir}/analysis.py --path $genes --outdir $projectDir
+    bash ${projectDir}/src/bash/setup_analysis.sh -p $projectDir
+    python3 ${projectDir}/src/python/analysis.py --path $genes --outdir $projectDir
     """
 }
 
 workflow {
-    createScanpy(gene_ch)
+    runScanpy(gene_ch)
+}
+
+workflow.onComplete {
+  println (workflow.success ? "Successfully completed pipeline." : "Error occurred in pipeline")
 }
