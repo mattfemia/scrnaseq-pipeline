@@ -1,13 +1,34 @@
+# Python process
 import.py
-cache
 __pycache__
+
+# Scanpy Caching
+cache/*
+
+# Nextflow
 .nextflow
 work
 .nextflow.log*
 tmp
+
+# Environment
 env
 venv
+
+# Raw Data Inputs
 data/*
+
+# Pipeline Output Directories
+logs/*
 figures/*
+outs/*
+
+# CellRanger runners
 vdj.sh
 cellranger.sh
+
+# Mac OS
+.DS_Store
+
+# Local Test Files
+local/*

@@ -1,9 +1,5 @@
 #!/bin/bash/env nextflow
-
 nextflow.enable.dsl=2
-
-// params.genes = "$baseDir/data"
-params.analysis_file = "$projectDir/src/python/analysis.py"
 
 gene_ch = Channel
             .fromPath("$projectDir/data/raw_feature_bc_matrix")
@@ -19,7 +15,7 @@ process runScanpy {
     script:
     """
     bash ${projectDir}/src/bash/setup_analysis.sh -p $projectDir
-    python3 ${projectDir}/src/python/analysis.py --path $genes --outdir $projectDir
+    python3 ${projectDir}/src/python/analysis.py --path $projectDir/data/raw_feature_bc_matrix --outdir $projectDir
     """
 }
 

@@ -7,6 +7,9 @@ import scanpy as sc
 import anndata
 import pandas as pd
 
+def hello():
+    return 'hello'
+
 def get_args():
 
     parser = argparse.ArgumentParser(description = "Specify path to count matrix")
@@ -16,7 +19,11 @@ def get_args():
     args = parser.parse_args()
     path = args.path
     outdir = args.outdir
-
+    
+    print(f'args: {args}\n')
+    print(f'path: {path}\n')
+    print(f'outdir: {outdir}\n')
+    
     return (path, outdir)
 
 def setup_anndata(path):
@@ -114,7 +121,8 @@ def rank_genes(adata, outfile, outdir):
     sc.tl.rank_genes_groups(adata, 'leiden', method='logreg')
     sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
     adata = sc.read(outfile)
-
+    adata.uns['log1p']["base"] = None # bug workaround for scanpy v1.9.1
+    
     pd.DataFrame(adata.uns['rank_genes_groups']['names']).to_csv(f'{outdir}/gene_rank.csv')
     result = adata.uns['rank_genes_groups']
     groups = result['names'].dtype.names
@@ -170,7 +178,6 @@ def main():
     sc.settings.autosave = True # Autosave figs on render
     sc.settings.autoshow = False # Disable showing figs on render
     
-    # TODO:  
     # Set low until EC2 benchmarking with CellRanger finished
     sc.settings.n_jobs = 8 # Num of CPU/jobs
     
