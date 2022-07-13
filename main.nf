@@ -5,6 +5,19 @@ gene_ch = Channel
             .fromPath("$projectDir/data/raw_feature_bc_matrix")
             .view()
 
+process checkDataDir {
+  input:
+  path genes
+  
+  output:
+  path genes
+
+  script:
+  """
+  bash ${projectDir}/src/bash/check_data.sh -p $projectDir
+  """
+}
+
 process runScanpy {
     publishDir "$baseDir/outs", mode: 'copy'
     echo true
@@ -20,7 +33,7 @@ process runScanpy {
 }
 
 workflow {
-    runScanpy(gene_ch)
+  checkDataDir(gene_ch) | runScanpy
 }
 
 workflow.onComplete {

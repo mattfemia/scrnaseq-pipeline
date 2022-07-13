@@ -20,10 +20,6 @@ def get_args():
     path = args.path
     outdir = args.outdir
     
-    print(f'args: {args}\n')
-    print(f'path: {path}\n')
-    print(f'outdir: {outdir}\n')
-    
     return (path, outdir)
 
 def setup_anndata(path):
@@ -86,7 +82,7 @@ def run_pca(adata, outfile):
     sc.pp.regress_out(adata,['total_counts', 'pct_counts_mt'])
     sc.pp.scale(adata,max_value=10)
     sc.tl.pca(adata,svd_solver='arpack')
-    sc.pl.pca(adata,color='GAPDH')
+    sc.pl.pca(adata, color='GAPDH')
     sc.pl.pca_variance_ratio(adata,log=True)
     adata.write(outfile)
 

@@ -17,6 +17,7 @@ venv
 
 # Raw Data Inputs
 data/*
+backup/*
 
 # Pipeline Output Directories
 logs/*

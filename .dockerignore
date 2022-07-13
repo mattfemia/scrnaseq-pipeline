@@ -1,8 +1,7 @@
-import.py
+python/import.py
 cache
 __pycache__
 .nextflow
-work
 .nextflow.log*
 Dockerfile
 env
@@ -10,7 +9,13 @@ venv
 tmp
 env
 venv
-data/*
+work/*
 figures/*
+outs/*
+local/*
+fastq/*
+tests/*
 vdj.sh
 cellranger.sh
+README
+LICENSE

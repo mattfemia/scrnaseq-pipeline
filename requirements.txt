@@ -17,11 +17,11 @@ natsort==7.1.1
 networkx==2.5.1
 numba==0.53.1
 numexpr==2.7.3
-numpy==1.21.0
+numpy==1.21.6
 packaging==21.0
-pandas==1.3.0
+pandas==1.3.5
 patsy==0.5.1
-Pillow==8.3.0
+Pillow==9.0.1
 pynndescent==0.5.4
 pyparsing==2.4.7
 python-dateutil==2.8.1

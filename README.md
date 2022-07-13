@@ -3,17 +3,30 @@
 **Nextflow pipeline using CellRanger and Scanpy for reproducible parallel analysis of scRNA-seq data**.
 
 ## Introduction  
-This pipeline uses Nextflow for orchestrating reproducible analysis of 
+This pipeline uses Nextflow for orchestrating reproducible parallel analysis of 
 scRNA-seq data across compute environments. It has the flexibility to be
-deployed as a containerized solution or built and executed locally.
+deployed as a containerized solution and deployed through several executors 
+(i.e. AWS Batch, Slurm, GCP, etc.) or built and executed locally.
 
 The analysis workflow involves:  
 * CellRanger analysis pipeline using FASTQ files
-* Post-analysis
+* Post-analysis of raw_feature_bc_matrices
 
 ## Docker
-A containerized image of this pipeline can quickly be built and deployed
-locally or through a cloud integration like AWS ECS.  
+The pipeline is containerized and can be run with the following commands:
+Build:
+```
+docker build -t scrna-pipeline .
+```
+  
+To run:
+```
+docker run scrna-pipeline
+```  
+  
+
+A containerized image of the CellRanger pipeline can also be easily built and deployed
+locally or through a cloud integration like AWS ECS or AWS Batch.  
   
 The Dockerfile instructs the setup of multiple pipeline dependencies:  
 - Python and required packages
