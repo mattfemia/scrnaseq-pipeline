@@ -13,7 +13,9 @@ The analysis workflow involves:
 * Post-analysis of raw_feature_bc_matrices
 
 ## Docker
-The pipeline is containerized and can be run with the following commands:
+The pipeline is containerized and can be run as-is with the following commands
+to execute the pipeline on sample data in the data/ directory:
+
 Build:
 ```
 docker build -t scrna-pipeline .
@@ -24,7 +26,10 @@ To run:
 docker run scrna-pipeline
 ```  
   
-
+The data/ directory should be the entry point for adding CellRanger-processed
+fastq files.
+  
+  
 A containerized image of the CellRanger pipeline can also be easily built and deployed
 locally or through a cloud integration like AWS ECS or AWS Batch.  
   
