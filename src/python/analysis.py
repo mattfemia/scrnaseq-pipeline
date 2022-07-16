@@ -5,7 +5,7 @@ import argparse
 import scanpy as sc
 import pandas as pd
 
-def hello() -> str:
+def hello():
     return 'hello'
 
 def get_args(argv=None):

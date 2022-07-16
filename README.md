@@ -1,6 +1,6 @@
 # scRNA-seq Pipeline
 
-**Nextflow pipeline using CellRanger and Scanpy for reproducible parallel analysis of scRNA-seq data**.
+**Nextflow pipeline using Scanpy for quick and reproducible parallel post-analysis of scRNA-seq data**.
 
 ## Introduction  
 This pipeline uses Nextflow for orchestrating reproducible parallel analysis of 
@@ -9,6 +9,8 @@ deployed as a containerized solution and deployed through several executors
 (i.e. AWS Batch, Slurm, GCP, etc.) or built and executed locally.
 
 The analysis workflow involves:  
+* Processing of raw sequencing files  
+* QC / MultiQC on FASTA & FASTQ files
 * CellRanger analysis pipeline using FASTQ files
 * Post-analysis of raw_feature_bc_matrices
 
@@ -16,12 +18,12 @@ The analysis workflow involves:
 The pipeline is containerized and can be run as-is with the following commands
 to execute the pipeline on sample data in the data/ directory:
 
-Build:
+Build:  
 ```
-docker build -t scrna-pipeline .
+docker build -f docker/Dockerfile -t scrna-pipeline .
 ```
   
-To run:
+To run:  
 ```
 docker run scrna-pipeline
 ```  
@@ -33,15 +35,17 @@ fastq files.
 A containerized image of the CellRanger pipeline can also be easily built and deployed
 locally or through a cloud integration like AWS ECS or AWS Batch.  
   
-The Dockerfile instructs the setup of multiple pipeline dependencies:  
-- Python and required packages
-- Java via openjdk
-- NextFlow
-- CellRanger-6.0.1
-- GRCh38-2020-A Reference for CellRanger
+The Dockerfile is also publicly hosted on Docker Hub and can be pulled down with the following commands:
+
+Stable version:  
+```
+docker pull mattfemia/scrna-pipeline:0.0.1-dev
+```  
   
-All of these can be customized, however each is required in some capacity for
-everything to function properly.  
+Latest:  
+```
+docker pull mattfemia/scrna-pipeline:0.0.1-dev
+```  
   
 ## CellRanger
 CellRanger is downloaded via a hosted option from umassmed.edu. This 

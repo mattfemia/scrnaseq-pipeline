@@ -33,3 +33,9 @@ cellranger.sh
 
 # Local Test Files
 local/*
+
+# Testing
+.pytest_cache
+
+# Editor
+.vscode
