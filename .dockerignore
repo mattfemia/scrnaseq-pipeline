@@ -19,3 +19,4 @@ vdj.sh
 cellranger.sh
 README
 LICENSE
+.travis.yml

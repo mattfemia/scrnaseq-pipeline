@@ -1,28 +1,26 @@
 #!/usr/bin python3
 #analysis.py
 
-import os
 import argparse
 import scanpy as sc
-import anndata
 import pandas as pd
 
-def hello():
+def hello() -> str:
     return 'hello'
 
-def get_args():
+def get_args(argv=None):
 
     parser = argparse.ArgumentParser(description = "Specify path to count matrix")
     parser.add_argument('--path', metavar='path', type=str, help='Specify path to count matrix directory')
     parser.add_argument('--outdir', metavar='outdir', type=str, help='Specify path to project directory')
     
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     path = args.path
     outdir = args.outdir
     
     return (path, outdir)
 
-def setup_anndata(path):
+def setup_anndata(path: str):
 
     # Init anndata obj
     adata = sc.read_10x_mtx(
@@ -32,7 +30,7 @@ def setup_anndata(path):
 
     return adata
 
-def plot_top_genes(adata, count):
+def plot_top_genes(adata, count: int):
 
     adata.var_names_make_unique()
     sc.pl.highest_expr_genes(adata, n_top=count, )
@@ -77,7 +75,7 @@ def calc_variable_genes(adata):
     
     return adata
 
-def run_pca(adata, outfile):
+def run_pca(adata, outfile: str):
 
     sc.pp.regress_out(adata,['total_counts', 'pct_counts_mt'])
     sc.pp.scale(adata,max_value=10)
