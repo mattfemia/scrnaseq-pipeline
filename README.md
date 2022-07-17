@@ -1,8 +1,12 @@
 # scRNA-seq Pipeline
-
+[![Build Status](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline.svg?branch=master)](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline)  
+  
+![version](https://img.shields.io/badge/version-0.0.1b2-blue)  
+  
 **Nextflow pipeline using Scanpy for quick and reproducible parallel post-analysis of scRNA-seq data**.
 
 ## Introduction  
+---
 This pipeline uses Nextflow for orchestrating reproducible parallel analysis of 
 scRNA-seq data across compute environments. It has the flexibility to be
 deployed as a containerized solution and deployed through several executors 
@@ -13,8 +17,11 @@ The analysis workflow involves:
 * QC / MultiQC on FASTA & FASTQ files
 * CellRanger analysis pipeline using FASTQ files
 * Post-analysis of raw_feature_bc_matrices
-
-## Docker
+  
+## Pipeline Environments
+---
+### Docker  
+  
 The pipeline is containerized and can be run as-is with the following commands
 to execute the pipeline on sample data in the data/ directory:
 
@@ -47,7 +54,12 @@ Latest:
 docker pull mattfemia/scrna-pipeline:0.0.1-dev
 ```  
   
-## CellRanger
+### AWS Batch / Terraform 
+  
+### Local Pipeline  
+  
+## CellRanger  
+---
 CellRanger is downloaded via a hosted option from umassmed.edu. This 
 design decision was to avoid the self-expiring, signedURL version available on 
 10XGenomics official site. The latter can be used, but keep in mind the 

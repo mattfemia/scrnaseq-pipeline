@@ -39,3 +39,9 @@ local/*
 
 # Editor
 .vscode
+
+# Terraform
+.terraform/
+.terraform.*
+terraform.*
+terraform/local.tf
