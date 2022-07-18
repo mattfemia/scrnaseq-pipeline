@@ -5,10 +5,11 @@ python:
 before_install:
   - python --version
   - pip install -U pip
-  - pip install codecov
 install:
   - pip install -r requirements.txt
+  - pip install codecov
+  - pip install pytest-cov
 script:
-  - python3 -m unittest discover
+  - pytest --cov-report term --cov=tests/
 after_success:
   - codecov
