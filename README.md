@@ -1,8 +1,10 @@
 # scRNA-seq Pipeline
 [![Build Status](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline.svg?branch=master)](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline)
+[![codecov](https://codecov.io/gh/mattfemia/scrnaseq-pipeline/branch/master/graph/badge.svg?token=guV5fVIYcy)](https://codecov.io/gh/mattfemia/scrnaseq-pipeline) 
  ![version](https://img.shields.io/badge/version-0.0.1b2-blue)  
   
-**Nextflow pipeline using Scanpy for quick and reproducible parallel post-analysis of scRNA-seq data**.
+### **Nextflow pipeline for reproducible parallel analysis of scRNA-seq data**.
+  
 ## Contents
 1. [Introduction](##Introduction)
 2. [Data](##Data)
@@ -15,20 +17,29 @@
 
   
 ## Introduction  
-This pipeline uses Nextflow for orchestrating reproducible parallel analysis of scRNA-seq data across compute environments. It has the flexibility to be deployed as a containerized solution and deployed through several executors (i.e. AWS Batch, Slurm, GCP, etc.) or built and executed locally.
+The purpose here is to provide a standard, pre-built bioinformatics infrastructure for processing single-cell RNA sequencing (scRNA-seq) files generated primarily with 10X Genomics' Chromium controllers / library prep (however, the pipeline could be easily modified to exclude these pre-processing steps and work directly with FASTQ files - please submit an issue ticket for assistance).  
+  
+The overall goal is to promote reproducible research and more generally, reproducible and streamlined bioinformatics workflows.  
+  
+The pipeline uses [Nextflow](https://www.nextflow.io/) for orchestrating reproducible parallel analysis of scRNA-seq data across compute environments. It has the flexibility to be run as a dockerized solution, deployed through several batch-processing executors (i.e. AWS Batch, Slurm, GCP, etc.), or built and executed locally.
 
-The analysis workflow involves:  
-* Processing of raw sequencing files
+The analysis workflow involves:
+  
+* Demultiplex Illumina-sequencer-generated BCL files
+* Generate FASTQ files using CellRanger
 * QC / MultiQC on FASTA & FASTQ files
-* CellRanger analysis pipeline using FASTQ files
 * Post-analysis of raw_feature_bc_matrices
+* Generate final figures/visuals
+  
+A sample post-analysis file can be found in [src/python/analysis.py](src/python/analysis.py), however, the contents of the file can and should be replaced with **any** analysis.
   
 ## Data
   
-The pipeline expects data to be in the /data directory in the root of the repo. Alternatively, users can point to an AWS S3 bucket or similar blob/file storage by changing these properties in [nextflow.config](nextflow.config). For more information, see more [here](https://www.nextflow.io/docs/latest/amazons3.html)
+The pipeline expects data to be in the /data directory in the root of the repo. Alternatively, users can point to an AWS S3 bucket or similar blob/file storage by changing these properties in [nextflow.config](nextflow.config). For more information on editing this Nextflow configuration, read more [here](https://www.nextflow.io/docs/latest/amazons3.html)
 
 ## Analysis
-The contents in [python/analysis.py](python/analysis.py) provide a basic example of scRNA processing. However, any analysis can replace the contents of this file and run accordingly.
+  
+The contents in [python/analysis.py](python/analysis.py) provide a basic example of scRNA post-analysis. However, *any* analysis can replace the contents of this file and run accordingly.
 
 ## Pipeline-Environments
   
@@ -120,20 +131,38 @@ The following steps can be used to run the pipeline locally using [Nextflow](htt
 
 2. Install Nextflow (version 20.07.x or higher):
       
-        curl -s https://get.nextflow.io | bash
+      curl -s https://get.nextflow.io | bash
 
 3. (Optional) If `Salmon`, `FastQC`, and `Multiqc` are not installed, you can add these to your current conda environment by updating the <`conda-env`> and then running:
 
-        conda env update --name <conda-env> --file conda.yml --prune
+      conda env update --name <conda-env> --file conda.yml --prune
         
 4. Launch the pipeline execution: 
 
-        ./nextflow run nextflow-io/rnaseq-nf -with-docker
+      ./nextflow run nextflow-io/rnaseq-nf -with-docker
         
 5. When the execution completes open in your browser the report generated at the following path:
 
-        results/multiqc_report.html 
+      results/multiqc_report.html 
 	
 You can see an example report at the following [link](http://multiqc.info/examples/rna-seq/multiqc_report.html).
 
 ### Technology
+  
+- Nextflow
+- FastQC
+- Multiqc
+- Salmon
+- CellRanger
+- Python
+  - Scanpy
+  - unittest
+- Terraform
+- AWS
+  - Batch
+  - S3
+  - VPC
+  - Fargate
+- GNU make
+- Conda
+- Travis CI
