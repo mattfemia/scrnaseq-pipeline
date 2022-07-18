@@ -1,12 +1,10 @@
 # scRNA-seq Pipeline
-[![Build Status](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline.svg?branch=master)](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline)  
-  
-![version](https://img.shields.io/badge/version-0.0.1b2-blue)  
+[![Build Status](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline.svg?branch=master)](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline)
+ ![version](https://img.shields.io/badge/version-0.0.1b2-blue)  
   
 **Nextflow pipeline using Scanpy for quick and reproducible parallel post-analysis of scRNA-seq data**.
 
 ## Introduction  
----
 This pipeline uses Nextflow for orchestrating reproducible parallel analysis of 
 scRNA-seq data across compute environments. It has the flexibility to be
 deployed as a containerized solution and deployed through several executors 
@@ -19,7 +17,7 @@ The analysis workflow involves:
 * Post-analysis of raw_feature_bc_matrices
   
 ## Pipeline Environments
----
+  
 ### Docker  
   
 The pipeline is containerized and can be run as-is with the following commands
@@ -35,14 +33,12 @@ To run:
 docker run scrna-pipeline
 ```  
   
-The data/ directory should be the entry point for adding CellRanger-processed
-fastq files.
-  
+The data/ directory should be the entry point for adding data files
   
 A containerized image of the CellRanger pipeline can also be easily built and deployed
 locally or through a cloud integration like AWS ECS or AWS Batch.  
   
-The Dockerfile is also publicly hosted on Docker Hub and can be pulled down with the following commands:
+The Docker image is also publicly available and hosted on DockerHub and can be pulled down:
 
 Stable version:  
 ```
@@ -54,69 +50,73 @@ Latest:
 docker pull mattfemia/scrna-pipeline:0.0.1-dev
 ```  
   
+
 ### AWS Batch / Terraform 
   
-### Local Pipeline  
+For current AWS users looking to configure the pipeline with AWS Batch, the resources infrastructure can be set-up automatically by configuring the terraform files found in the [terraform/](/terraform) directory.
   
-## CellRanger  
----
-CellRanger is downloaded via a hosted option from umassmed.edu. This 
-design decision was to avoid the self-expiring, signedURL version available on 
-10XGenomics official site. The latter can be used, but keep in mind the 
-deployment will fail any wget/curl executions after the URL expires -- and 
-therefore won't be sustainable in a CI/CD deployment. You will have to download
-and host directly if you choose to change this or use CellRanger-3.*.* available
-in several places, but lacking many newer features.
-
-To build:
-```
-docker build -t scpipeline .
-```
+#### AWS Infrastructure  
+When configured, the following resources will be initialized and managed in terraform state:  
   
-To run:
-```
-docker run -it scpipeline sh
-cd /opt
-nextflow run main.nf
-```  
+- S3 Bucket (Private Access)
+- Batch Compute Environment (with Fargate)
+- Batch Job Queue
+- VPC
   
-Or optionally add a CMD directive to the Dockerfile to automatically execute the
-run command. This was intentionally left out at the moment to extend flexibility
-
-## AWS EC2 Instance Storage Option
-If choosing to manually set-up and run docker container with /fastq/data 
-directly on EC2 (rather than S3 and/or Batch), either through ECR-->ECS or 
-UserData-->EC2-init, it will be costly to scale EBS volumes for large amounts 
-of sequencing data. As an alternative, I would recommend selecting an EC2 
-instance type that has available instance storage. This would allow for enough 
-storage capacity to ingest your files and then recycle data as your pipeline 
-progresses.  
+#### Configuration
+To configure:  
   
-This strategy could also be used to quickly test or run/debug forks 
-of this pipeline.
+- Update the `provider "aws" {...}` block in [terraform/main.tf](/terraform/main.nf) to include your AWS credentials. More information can be found [here](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#provider-configuration)
+- (Optional) If state is managed with Terraform Cloud or with a VCS rather than locally, uncomment and edit the `backend "remote" {...}` block in [terraform/main.tf](/terraform/main.nf)
+- (Optional) Update the S3 bucket name by editing the `resource "aws_s3_bucket" "pipeline_bucket" {...}` block
   
-To mount:
-1. SSH into EC2 instance: 
-```
-ssh -i /path/keypair.pem instance@public-dns
-```
+#### Deploying Infrastructure
+A basic walkthrough of Terraform can be found [here](https://learn.hashicorp.com/collections/terraform/aws-get-started?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS). However the following shell commands will perform setup:
+  
+1. To initialize your project directory:
+  
+  `terraform init`
+  
+2. Check formatting of file after editing:
+  
+  `terraform fmt`
+  
+3. Deploy changes (*WARNING: You **will** be charged for AWS resources after deploying*):
+  
+  `terraform apply`
 
-2. Check mapped volumes that are not mounted: 
-```
-lsblk
-```
+4. Finally, to teardown resources:
+  
+  `terraform destroy`
+  
+These commands are also available in [terraform/tf.sh](terraform/tf.sh)  
+  
+### Nextflow / Local Pipeline  
+  
+#### Requirements
+  
+* Unix-like operating system (Linux, macOS, etc)
+* Java 8
+* [Salmon](https://combine-lab.github.io/salmon/) 1.0.0
+* [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) 0.11.5
+* [Multiqc](https://multiqc.info) 1.5
 
-3. Make filesystem from volume, where nvme1n1 is your unmounted volume from lsblk
-```
-sudo mkfs -t xfs /dev/nvme1n1
-```
+The following steps can be used to run the pipeline locally using [Nextflow](https://www.nextflow.io/)  
+  
+1. If you don't have it already install Docker in your computer. Read more [here](https://docs.docker.com/).
 
-4. Create a directory to mount: 
-```
-sudo mkdir /data
-```
+2. Install Nextflow (version 20.07.x or higher):
+      
+        curl -s https://get.nextflow.io | bash
 
-5. Mount fs to directory:
-```
-sudo mount /dev/nvme1n1 /data
-```
+3. Launch the pipeline execution: 
+
+        ./nextflow run nextflow-io/rnaseq-nf -with-docker
+        
+4. When the execution completes open in your browser the report generated at the following path:
+
+        results/multiqc_report.html 
+	
+You can see an example report at the following [link](http://multiqc.info/examples/rna-seq/multiqc_report.html).
+
+### Technology

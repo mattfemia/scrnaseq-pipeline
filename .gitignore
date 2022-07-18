@@ -45,3 +45,9 @@ local/*
 .terraform.*
 terraform.*
 terraform/local.tf
+local.tf
+terraform/variables.tf
+terraform/outputs.tf
+
+# Misc
+old-README.md
