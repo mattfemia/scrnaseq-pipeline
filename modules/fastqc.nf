@@ -15,6 +15,6 @@ process FASTQC {
 
     script:
     """
-    fastqc.sh "$sample_id" "$reads"
+    bash ${projectDir}/src/bash/fastqc.sh "$sample_id" "$reads"
     """
 }

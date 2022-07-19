@@ -23,10 +23,12 @@ backup/*
 logs/*
 figures/*
 outs/*
+multiqc/*
+results/*
 
 # CellRanger runners
-vdj.sh
-cellranger.sh
+# vdj.sh
+# cellranger.sh
 
 # Mac OS
 .DS_Store
