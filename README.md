@@ -17,7 +17,7 @@
 
   
 ## Introduction  
-The purpose here is to provide a standard, pre-built bioinformatics infrastructure for processing single-cell RNA sequencing (scRNA-seq) files generated primarily with 10X Genomics' Chromium controllers / library prep (however, the pipeline could be easily modified to exclude these pre-processing steps and work directly with FASTQ files - please submit an issue ticket for assistance).  
+The purpose here is to provide a standard, pre-built bioinformatics infrastructure for processing single-cell RNA sequencing (scRNA-seq) files generated primarily with [10X Genomics' Chromium controllers / library prep](https://www.10xgenomics.com/) (however, the pipeline could be easily modified to exclude these pre-processing steps and work directly with FASTQ files - please submit an issue ticket for assistance).  
   
 The overall goal is to promote reproducible research and more generally, reproducible and streamlined bioinformatics workflows.  
   
@@ -130,20 +130,20 @@ The following steps can be used to run the pipeline locally using [Nextflow](htt
 1. If you don't have it already install Docker in your computer. Read more [here](https://docs.docker.com/).
 
 2. Install Nextflow (version 20.07.x or higher):
-      
-      curl -s https://get.nextflow.io | bash
 
+      curl -s https://get.nextflow.io | bash
+      
 3. (Optional) If `Salmon`, `FastQC`, and `Multiqc` are not installed, you can add these to your current conda environment by updating the <`conda-env`> and then running:
 
-      conda env update --name <conda-env> --file conda.yml --prune
+        conda env update --name <conda-env> --file conda.yml --prune
         
-4. Launch the pipeline execution: 
+4. Launch the pipeline execution:
 
-      ./nextflow run nextflow-io/rnaseq-nf -with-docker
+        ./nextflow run mattfemia/scrna-pipeline -with-docker
         
 5. When the execution completes open in your browser the report generated at the following path:
 
-      results/multiqc_report.html 
+        results/multiqc_report.html 
 	
 You can see an example report at the following [link](http://multiqc.info/examples/rna-seq/multiqc_report.html).
 

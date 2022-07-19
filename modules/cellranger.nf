@@ -1,5 +1,4 @@
 #!/bin/bash/env nextflow
-
 nextflow.enable.dsl=2
 
 // Pre-filled params for demonstrative purposes
