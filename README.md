@@ -1,7 +1,7 @@
 # scRNA-seq Pipeline
 [![Build Status](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline.svg?branch=master)](https://app.travis-ci.com/mattfemia/scrnaseq-pipeline)
 [![codecov](https://codecov.io/gh/mattfemia/scrnaseq-pipeline/branch/master/graph/badge.svg?token=guV5fVIYcy)](https://codecov.io/gh/mattfemia/scrnaseq-pipeline) 
- ![version](https://img.shields.io/badge/version-0.0.1b2-blue)  
+ ![version](https://img.shields.io/badge/version-0.0.1b3-blue)  
   
 ### **Nextflow pipeline for reproducible parallel analysis of scRNA-seq data**.
   
@@ -39,7 +39,7 @@ The pipeline expects data to be in the /data directory in the root of the repo. 
 
 ## Analysis
   
-The contents in [python/analysis.py](python/analysis.py) provide a basic example of scRNA post-analysis. However, *any* analysis can replace the contents of this file and run accordingly.
+The contents in [src/python/analysis.py](src/python/analysis.py) provide a basic example of scRNA post-analysis. However, *any* analysis can replace the contents of this file and run accordingly.
 
 ## Pipeline-Environments
   

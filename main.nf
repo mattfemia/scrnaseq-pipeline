@@ -3,17 +3,17 @@ nextflow.enable.dsl=2
 
 // import modules
 include { POSTANALYSIS } from './modules/postanalysis.nf'
+include { CELLRANGER_COUNT } from './modules/cellranger-count.nf'
 include { CHECKDIR } from './modules/checkdir.nf'
 include { RNASEQ } from './modules/rnaseq'
 include { MULTIQC } from './modules/multiqc'
 
-params.reads = "$baseDir/data/ggal/ggal_gut_{1,2}.fq"
-params.transcriptome = "$baseDir/data/ggal/transcriptome.fa"
-params.outdir = "results"
-params.multiqc = "$baseDir/multiqc"
-
 gene_ch = Channel
             .fromPath("$projectDir/data/raw_feature_bc_matrix")
+            .view()
+
+fastq_ch = Channel
+            .fromPath(params.fastq_dir)
             .view()
 
 log.info """\
@@ -34,7 +34,8 @@ log.info """\
  """
 
 workflow {
-  CHECKDIR( gene_ch ) | POSTANALYSIS
+  // CHECKDIR( fastq_ch ) | CELLRANGER_COUNT | POSTANALYSIS
+  CELLRANGER_COUNT( fastq_ch ) | POSTANALYSIS
   read_pairs_ch = channel.fromFilePairs( params.reads, checkIfExists: true ) 
   RNASEQ( params.transcriptome, read_pairs_ch )
   MULTIQC( RNASEQ.out, params.multiqc )

@@ -16,7 +16,7 @@ env
 venv
 
 # Raw Data Inputs
-data/*
+data/analysis*
 backup/*
 
 # Pipeline Output Directories
@@ -50,6 +50,9 @@ terraform/local.tf
 local.tf
 terraform/variables.tf
 terraform/outputs.tf
+
+# AWS
+aws/*.pem
 
 # Misc
 old-README.md

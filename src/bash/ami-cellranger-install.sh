@@ -2,12 +2,14 @@
 
 # Cellranger 7.0.0 download
 cd /opt
-curl -o cellranger-7.0.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.0.0.tar.gz?Expires=1658251696&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci03LjAuMC50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2NTgyNTE2OTZ9fX1dfQ__&Signature=IqnRhY9DrUSdOwhQ4izLqRtq9E5dPes6uGwBZGzpQbc2oV4yUe2pHMnVXogPsb3V7zXyFop1nT3Yn5c4pGyU80oWLdUAdAZeTbuFgBCAn8zWy5MMX8iOHHBmm7n9eLd5JfOFzvqhZEZUyY4B7IPvEbMRrNF3iXP9MyYGTJdAkBPotXfl9KEMLouCrcjoKS5yn1FG5rnX5MRBipevx9TQLMWBf6iXcn4JHG39LcFMesxkm7~geT7iV1W-n77ovrMAL9lc1h4KguSKtwdzt8ai5tUykeHgtRWFbRMFbV3rj2f0oWoyiOmB0W~Yr4jaGawTHhiOWsZ1lC1dYZQoKnID9w__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA"
-tar -xzvf cellranger-7.0.0.tar.gz
+wget -O cellranger-7.0.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.0.0.tar.gz?Expires=1658295882&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci03LjAuMC50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2NTgyOTU4ODJ9fX1dfQ__&Signature=nfrGaqnurk4Ra1~8Nd4US1pq8yKCRpqGJtyyOzd2xRhkOF2~XFiPslLgZ1F8Ow-1jqSrrGgoW-DlKOIJdkdL7hOz0IGAtKpz8Ei7MyPe4g0j~0Yw9QC3OPmheSz5p1kgAMOfJ-GvA5D7aJpfxTYI1Wp73cvTWtrQBLHmxAb7zuwuqBSHdnjgC653VFAzD7y6Cg4qQuzkNIDQ-uEOqtC6pasOgn56P~w-6Pv3EoNIFkrJ0UKBtv8qgE4KmREWK7M8XUEfhu1z0HoJI~SMYw~vn3HvHWnBrUIi082dKGanqWYbKGcYt74L-9rdYLo7R-s2eWhxvveBz14X4ji5egAXMg__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA"
+tar -xzvf *.tar.gz
+rm *.tar.gz
 
 # GRCh38 reference download
-curl -O https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz
+wget https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz
 tar -xzvf refdata-gex-GRCh38-2020-A.tar.gz
+rm *.tar.gz
 
 # Add Cellranger to PATH
 export PATH=/opt/cellranger-7.0.0:$PATH

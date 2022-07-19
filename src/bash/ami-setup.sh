@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# java
+sudo amazon-linux-extras install -y java-openjdk11
+
 # Nextflow
 curl -s https://get.nextflow.io | bash
 
@@ -29,8 +32,7 @@ sudo find / -name "docker-compose" -ls
 # Python and pip
 sudo yum install -y amazon-linux-extras
 sudo amazon-linux-extras enable python3.8
-sudo yum install python3.8
-sudo yum install python37
+sudo yum install python38
 python3 --version
 curl -O https://bootstrap.pypa.io/get-pip.py
 python3 get-pip.py --user
